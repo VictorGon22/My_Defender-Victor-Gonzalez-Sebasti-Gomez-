@@ -30,6 +30,12 @@ void ini_struct_sprites(all_var  *all)
     all->sprites->settings = create_settings();
     all->sprites->levels = create_levels();
     all->sprites->shop = create_shop(); 
+    all->sprites->tower_1_2 = create_tower_1_2();
+    all->sprites->tower_2_2 = create_tower_2_2();
+    all->sprites->tower_3_2 = create_tower_3_2();
+    all->sprites->tower_4_2 = create_tower_4_2();
+
+
 }
 
 all_var *init_var_all(void)
@@ -41,17 +47,12 @@ all_var *init_var_all(void)
     all->sprites = malloc(sizeof(sprites_var));
     all->windows = malloc(sizeof(window_var));
     all->texts = malloc(sizeof(texts_var));
-    all->slots = malloc(sizeof(slots_var));
-    all->soldiers = malloc(sizeof(t_info_files));
+    all->slots = malloc(sizeof(t_info_slots));
+    all->soldiers = malloc(sizeof(t_info_soldiers));
     all->var = malloc(sizeof(t_var));
     if (all->sounds == NULL ||  all->vectors == NULL || all->clocks == NULL || all->sprites == NULL || all->windows == NULL || all->var == NULL)
         printf("ERROOOOR\n");
     return all;
-}
-
-void ini_slots_towers(all_var *all) 
-{
-    all->slots->slot1 = malloc(sizeof(towers_info_var));
 }
 
 void analayse_events(all_var *all, int page)
@@ -82,39 +83,40 @@ sfRenderWindow *my_window(all_var *all)
     sfMusic_destroy(all->sounds->music_game);
     sfMusic_destroy(all->sounds->soldiers_steps);
 }
-
-t_info_files *init_file(void)
+///////////////////////////////////////////////////////SOLDIERS
+t_info_soldiers *init_struc_soldiers(void)
 {
-    t_info_files *res = malloc(sizeof(t_info_files));
+    t_info_soldiers *res = malloc(sizeof(t_info_soldiers));
     res->next = NULL;
     return res;
 }
 
-t_info_files *ini_linked_envp(int i)
+t_info_soldiers *ini_linked_soldiers(int i)
 {
-    t_info_files *file = malloc(sizeof(t_info_files) * 1);
+    t_info_soldiers *file = malloc(sizeof(t_info_soldiers) * 1);
 
     if (file == NULL)
         perror("error\n");
     file->prev = NULL;
-    file->live = i;
+    file->num_soldier = i;
+    file->live = 100;
     file->pos_soldier = (sfVector2f) {0, 700};
     file->velocity_soldier;
     file->next = NULL;
     return file;
 }
 
-void create_new(t_info_files *file)
+void create_soldiers(t_info_soldiers *file)
 {
-    t_info_files *tmp = file;
-    t_info_files *tmp2 = file;
+    t_info_soldiers *tmp = file;
+    t_info_soldiers *tmp2 = file;
     int i = 0;
     int j = 0;
     while (tmp->next != NULL) {
         j++;
         tmp = tmp->next;
     }
-    tmp->next = ini_linked_envp(j);
+    tmp->next = ini_linked_soldiers(j);
     while (i < j - 1) {
         tmp2 = tmp2->next;
         i++;
@@ -125,21 +127,91 @@ void create_new(t_info_files *file)
         tmp->prev = tmp2;
         printf("%d\n", tmp->prev->live);
     }
-    
+}
+///////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////TOWERS
+sfVector2f save_pos_slot(int num_slot)
+{
+    //despres ho pasem a function pointers
+    if (num_slot == 1)
+        return ((sfVector2f) {305, 500});
+    else if (num_slot == 2)
+        return ((sfVector2f) {420, 235});
+    else if (num_slot == 3)
+        return ((sfVector2f) {840, 265});
+    else if (num_slot == 4)
+        return ((sfVector2f) {1080, 403});
+    else if (num_slot == 5)
+        return ((sfVector2f) {1380, 238});
+    else if (num_slot == 6)
+        return ((sfVector2f) {350, 670});
+    else if (num_slot == 7)
+        return ((sfVector2f) {576, 375});
+    else if (num_slot == 8)
+        return ((sfVector2f) {840, 480});
+    else if (num_slot == 9)
+        return ((sfVector2f) {1325, 515});
+    else if (num_slot == 10)
+        return ((sfVector2f) {1565, 350});
 }
 
+t_info_slots *init_struc_slots(void)
+{
+    t_info_slots *res = malloc(sizeof(t_info_slots));
+    res->next = NULL;
+    return res;
+}
+
+t_info_slots *ini_linked_slots(int i)
+{
+    t_info_slots *file = malloc(sizeof(t_info_slots) * 1);
+
+    if (file == NULL)
+        perror("error\n");
+    file->prev = NULL;
+    file->num_slot = i;
+    file->type_tower = 1;
+    file->level_tower = 100;
+    file->pos_slot = save_pos_slot(i);
+    file->next = NULL;
+    return file;
+}
+
+void create_slots(t_info_slots *file)
+{
+    t_info_slots *tmp = file;
+    int i = 0;
+    int j = 0;
+
+    while (tmp->next != NULL) {
+        j++;
+        tmp = tmp->next;
+    }
+    printf("num slot: %d\n", tmp->num_slot);
+    tmp->next = ini_linked_slots(j);
+
+}
+//////////////////////////////////////////////////////////////
 void my_defender(void)
 {
     int i = 0;
     all_var *all = init_var_all();
 
    //CREATE LINKED SOLDIERS NOW VALUES == O
-    all->soldiers = init_file();
-    while (i < 10) {
-        create_new(all->soldiers);
+    all->soldiers = init_struc_soldiers();
+    while (i <= 10) {
+        create_soldiers(all->soldiers);
         i++;
     }
     //////////////////////////////////
+    i = 0;
+    all->slots = init_struc_slots();
+    while (i <= 11) {
+        create_slots(all->slots);
+        i++;
+    }
+
     sfVideoMode video_mode;
     sfRenderWindow *window;
     all->windows->video_mode = (sfVideoMode){1920, 1080, 64};

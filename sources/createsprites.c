@@ -44,6 +44,42 @@ sfSprite *create_tower_4(void)
     return (sprite);
 }
 
+sfSprite *create_tower_1_2(void)
+{
+    sfTexture *texture = sfTexture_createFromFile
+    ("./images/game/tower_bigger/tower_1.png", NULL);
+    sfSprite *sprite = sfSprite_create();
+    sfSprite_setTexture (sprite, texture, 0);
+    return (sprite);
+}
+
+sfSprite *create_tower_2_2(void)
+{
+    sfTexture *texture = sfTexture_createFromFile
+    ("./images/game/tower_bigger/tower_2.png", NULL);
+    sfSprite *sprite = sfSprite_create();
+    sfSprite_setTexture (sprite, texture, 0);
+    return (sprite);
+}
+
+sfSprite *create_tower_3_2(void)
+{
+    sfTexture *texture = sfTexture_createFromFile
+    ("./images/game/tower_bigger/tower_3.png", NULL);
+    sfSprite *sprite = sfSprite_create();
+    sfSprite_setTexture (sprite, texture, 0);
+    return (sprite);
+}
+
+sfSprite *create_tower_4_2(void)
+{
+    sfTexture *texture = sfTexture_createFromFile
+    ("./images/game/tower_bigger/tower_4.png", NULL);
+    sfSprite *sprite = sfSprite_create();
+    sfSprite_setTexture (sprite, texture, 0);
+    return (sprite);
+}
+
 sfSprite *create_upg_tower_1(void)
 {
     sfTexture *texture_bend = sfTexture_createFromFile

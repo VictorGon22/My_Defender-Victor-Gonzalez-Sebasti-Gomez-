@@ -83,7 +83,12 @@ void scale_images(all_var *all)
     sfSprite_scale(all->sprites->tower_2, (sfVector2f){0.3, 0.3});
     sfSprite_scale(all->sprites->tower_3, (sfVector2f){0.3, 0.3});
     sfSprite_scale(all->sprites->tower_4, (sfVector2f){0.3, 0.3});
+    sfSprite_scale(all->sprites->tower_1_2, (sfVector2f){0.45, 0.45});
+    sfSprite_scale(all->sprites->tower_2_2, (sfVector2f){0.45, 0.45});
+    sfSprite_scale(all->sprites->tower_3_2, (sfVector2f){0.45, 0.45});
+    sfSprite_scale(all->sprites->tower_4_2, (sfVector2f){0.45, 0.45});
     sfSprite_scale(all->sprites->coin, (sfVector2f){0.3, 0.3});
+    sfSprite_scale(all->sprites->castle_live, (sfVector2f){2, 2});
 }
 
 void print_page_portada(all_var *all)
@@ -219,6 +224,13 @@ void change_char (sfIntRect *select_char)
         select_char->left = 0;
 }
 
+void change_live (sfIntRect *select_live)
+{
+    select_live->top += 30;
+    if (select_live->top >= 150)
+        select_live->top = 10;
+}
+
 void change_money (sfIntRect *select_coin)
 {
     select_coin->left += 56;
@@ -246,7 +258,7 @@ sfVector2f pos_money(all_var *all)
         return (pos_money2(all));
 }
 
-void print_soldier_run(all_var *all, t_info_files *tmp)
+void print_soldier_run(all_var *all, t_info_soldiers *tmp)
 {
     sfSprite_setPosition(all->sprites->soldier_run, tmp->pos_soldier);
     sfSprite_move(all->sprites->soldier_run, tmp->velocity_soldier);
@@ -255,7 +267,7 @@ void print_soldier_run(all_var *all, t_info_files *tmp)
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_run, NULL);
 }
 
-void print_soldier_d_u(all_var *all,  t_info_files *tmp)
+void print_soldier_d_u(all_var *all,  t_info_soldiers *tmp)
 {
     sfSprite_setPosition(all->sprites->soldier_d_u, tmp->pos_soldier);
     sfSprite_move(all->sprites->soldier_d_u, tmp->velocity_soldier);
@@ -264,7 +276,7 @@ void print_soldier_d_u(all_var *all,  t_info_files *tmp)
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_d_u, NULL);
 }
 
-void print_soldier_d_d(all_var *all,  t_info_files *tmp)
+void print_soldier_d_d(all_var *all,  t_info_soldiers *tmp)
 {
     sfSprite_setPosition(all->sprites->soldier_d_d, tmp->pos_soldier);
     sfSprite_move(all->sprites->soldier_d_d, tmp->velocity_soldier);
@@ -273,7 +285,7 @@ void print_soldier_d_d(all_var *all,  t_info_files *tmp)
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_d_d, NULL);
 }
 
-void print_soldier_u(all_var *all,  t_info_files *tmp)
+void print_soldier_u(all_var *all,  t_info_soldiers *tmp)
 {
     sfSprite_setPosition(all->sprites->soldier_u, tmp->pos_soldier);
     sfSprite_move(all->sprites->soldier_u, tmp->velocity_soldier);
@@ -282,11 +294,12 @@ void print_soldier_u(all_var *all,  t_info_files *tmp)
     tmp->pos_soldier = sfSprite_getPosition(all->sprites->soldier_u);
 }
 
-void print_tower_in_slot(all_var *all)
+void print_tower_in_slot(all_var *all, t_info_slots *tmp_slots)
 {
-    sfSprite_setPosition(all->sprites->soldier_u, all->vectors->pos_actual);
-    sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_u, NULL);
-    
+    if (tmp_slots->type_tower == 1) {
+        sfSprite_setPosition(all->sprites->tower_4_2, tmp_slots->pos_slot);
+        sfRenderWindow_drawSprite(all->windows->window, all->sprites->tower_4_2, NULL);
+    }
 }
 
 void print_shop3(all_var *all)
@@ -334,7 +347,7 @@ void print_shop2(all_var *all)
     print_shop3(all);
 }
 
-void print_char(all_var *all, t_info_files *tmp)
+void print_char(all_var *all, t_info_soldiers *tmp)
 {
     all->clocks->time_char = sfClock_getElapsedTime(all->clocks->clock_char);
     if (sfTime_asSeconds(all->clocks->time_char) > 0.05) {
@@ -404,32 +417,42 @@ void print_page_game(all_var *all)
     else
         sfMusic_pause(all->sounds->soldiers_steps);
     //IMPRESIÓ TORRES 1 A 5
+    t_info_slots *tmp_slots = all->slots->next;
+    while (tmp_slots->next != NULL) {
+        ///Passarho a function pointers
+        if (tmp_slots->num_slot >= 1 && tmp_slots->num_slot <= 5)
+            print_tower_in_slot(all, tmp_slots);
+        tmp_slots = tmp_slots->next;
+    }
 
     ///////////// Movment player
-    t_info_files *tmp = all->soldiers->next;
-    printf("live: %d\n", tmp->live);
+    t_info_soldiers *tmp = all->soldiers->next;
     while (tmp->next != NULL) {
-        //if (tmp->prev != NULL)
-        printf("actual: %d prev:%d %f\n", tmp->live, tmp->prev->live, tmp->prev->pos_soldier.x);
-        if (tmp->live == 0 || tmp->prev->pos_soldier.x >= 100) {
-            printf("live: %d\n", tmp->live);
-            print_char(all, tmp);
+        if (tmp->num_soldier == 0 || tmp->prev->pos_soldier.x >= 100) {
+            if (tmp->live > 0)
+                print_char(all, tmp);
         }
         tmp = tmp->next;
     }
-
-    /*print_char(all, all->soldiers->next);
-    if (all->soldiers->next->pos_soldier.x >= 100) {
-        print_char(all, all->soldiers->next->next);
-        printf("%d %d\n", all->soldiers->next->live, all->soldiers->next->next->prev->live);
-    }
-    if (all->soldiers->next->next->pos_soldier.x >= 100)
-        print_char(all, all->soldiers->next->next->next);
-    if (all->vectors->pos_actual.x >= 1550)
-        all->vectors->pos_actual = (sfVector2f) {0, 700};
-    */
-    //////////////// IMPRESIO TORRES 6 A 10
     
+    //////////////// IMPRESIO TORRES 6 A 10
+    tmp_slots = all->slots->next;
+    while (tmp_slots->next != NULL) {
+        ///Passarho a function pointers
+        if (tmp_slots->num_slot >= 6 && tmp_slots->num_slot <= 10)
+            print_tower_in_slot(all, tmp_slots);
+        tmp_slots = tmp_slots->next;
+    }
+
+    ////////////////VIDA CASTELL
+    sfSprite_setPosition(all->sprites->castle_live, (sfVector2f) {1350, 900});
+    sfSprite_setTextureRect(all->sprites->castle_live,  all->vectors->select_live);
+    all->clocks->time_live = sfClock_getElapsedTime(all->clocks->clock_live);
+    if (sfTime_asSeconds(all->clocks->time_live) > 0.2) {
+        change_live(&all->vectors->select_live);
+        sfClock_restart(all->clocks->clock_live);
+    }
+    sfRenderWindow_drawSprite(all->windows->window, all->sprites->castle_live, NULL);
     
     
     

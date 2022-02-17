@@ -22,6 +22,10 @@
         sfSprite *tower_2;
         sfSprite *tower_3;
         sfSprite *tower_4;
+        sfSprite *tower_1_2;
+        sfSprite *tower_2_2;
+        sfSprite *tower_3_2;
+        sfSprite *tower_4_2;
         sfSprite *upg_tower_1;
         sfSprite *upg_tower_2;
         sfSprite *upg_tower_3;
@@ -47,10 +51,12 @@
         sfClock *clock_char;
         sfClock *clock_button;
         sfClock *clock_button2;
+        sfClock *clock_live;
         sfTime time;
         sfTime time_char;
         sfTime time_button;
         sfTime time_button2;
+        sfTime time_live;
     } clocks_var;
 
     //STRUCT SOUNDS    
@@ -87,6 +93,7 @@
         sfVector2f velocity_character; 
         sfIntRect select_coin;
         sfIntRect select_character;
+        sfIntRect select_live;
 
         //POS TORRES MAP 1
         sfVector2f pos_tower_slot1;
@@ -123,27 +130,28 @@
         int money;
     } t_var;
 
-  //STRUCT INFO_TOWERS
-    typedef struct s_infotowers_var {
-        int type_tower;
-        int level_upgrade;
-    } towers_info_var;
-
     //STRUCT INFO_TOWERS
     typedef struct s_slots_towers_var {
         struct s_infotowers_var *slot1;
     } slots_var;
 
-
-    typedef struct s_info_files {
+    typedef struct s_info_soldiers {
+        int num_soldier;
         int live;
         sfVector2f pos_soldier;
         sfVector2f velocity_soldier;
-        struct s_info_files *prev;
-        struct s_info_files *next;
+        struct s_info_soldiers *prev;
+        struct s_info_soldiers *next;
+    } t_info_soldiers;
 
-    } t_info_files;
-
+    typedef struct s_info_slots {
+        int num_slot;
+        int type_tower;
+        int level_tower;
+        sfVector2f pos_slot;
+        struct s_info_slots *prev;
+        struct s_info_slots *next;
+    } t_info_slots;
 
     //STRUCT ALL
     typedef struct s_all_var {
@@ -153,8 +161,8 @@
         struct s_clocks_var *clocks;
         struct s_window_var *windows;
         struct s_texts_var *texts;
-        struct s_slots_towers_var * slots;
-        struct s_info_files *soldiers;
+        struct s_info_slots *slots;
+        struct s_info_soldiers *soldiers;
         struct s_var *var;
     } all_var;
 
