@@ -347,6 +347,14 @@ void print_shop2(all_var *all)
     print_shop3(all);
 }
 
+void print_castle_live(all_var *all)
+{
+    sfSprite_setPosition(all->sprites->castle_live, (sfVector2f) {1350, 900});
+    sfSprite_setTextureRect(all->sprites->castle_live,  all->vectors->select_live);
+    //change_live(&all->vectors->select_live);
+    sfRenderWindow_drawSprite(all->windows->window, all->sprites->castle_live, NULL);
+}
+
 void print_char(all_var *all, t_info_soldiers *tmp)
 {
     all->clocks->time_char = sfClock_getElapsedTime(all->clocks->clock_char);
@@ -376,6 +384,13 @@ void print_char(all_var *all, t_info_soldiers *tmp)
         tmp->velocity_soldier = (sfVector2f) {2.2, -1.6};
         print_soldier_d_u(all, tmp);
     }
+    else if (tmp->pos_soldier.x >= 1549 && tmp->pos_soldier.x <= 1551) {
+        if (tmp->live > 0) {
+            change_live(&all->vectors->select_live);
+            tmp->live = 0;
+        }
+    }
+    printf("%f\n", tmp->pos_soldier.x );
 }
 
 void print_shop(all_var *all)
@@ -402,6 +417,7 @@ void print_shop(all_var *all)
     sfText_setColor(all->texts->text, sfColor_fromRGB(255, 255, 255));
     print_shop2(all);
 }
+
 
 void print_page_game(all_var *all)
 {   
@@ -443,16 +459,12 @@ void print_page_game(all_var *all)
             print_tower_in_slot(all, tmp_slots);
         tmp_slots = tmp_slots->next;
     }
-
+    print_castle_live(all);
     ////////////////VIDA CASTELL
-    sfSprite_setPosition(all->sprites->castle_live, (sfVector2f) {1350, 900});
-    sfSprite_setTextureRect(all->sprites->castle_live,  all->vectors->select_live);
-    all->clocks->time_live = sfClock_getElapsedTime(all->clocks->clock_live);
-    if (sfTime_asSeconds(all->clocks->time_live) > 0.2) {
-        change_live(&all->vectors->select_live);
-        sfClock_restart(all->clocks->clock_live);
-    }
-    sfRenderWindow_drawSprite(all->windows->window, all->sprites->castle_live, NULL);
+    //sfSprite_setPosition(all->sprites->castle_live, (sfVector2f) {1350, 900});
+    //sfSprite_setTextureRect(all->sprites->castle_live,  all->vectors->select_live);
+    //change_live(&all->vectors->select_live);
+    //sfRenderWindow_drawSprite(all->windows->window, all->sprites->castle_live, NULL);
     
     
     

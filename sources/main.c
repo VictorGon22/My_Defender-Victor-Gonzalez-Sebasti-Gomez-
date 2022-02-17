@@ -72,7 +72,7 @@ sfRenderWindow *my_window(all_var *all)
     all->var->score = 0;
     all->var->page = 5;
     
-    sfMusic_play(all->sounds->music_game);
+    //sfMusic_play(all->sounds->music_game);
     scale_images(all);
     while (sfRenderWindow_isOpen(all->windows->window)) {
         sfRenderWindow_clear(all->windows->window, sfBlack);
