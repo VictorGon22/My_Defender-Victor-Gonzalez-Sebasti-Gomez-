@@ -17,6 +17,7 @@ void ini_struct_sprites(all_var  *all)
     all->sprites->upg_tower_2 = create_upg_tower_2();
     all->sprites->upg_tower_3 = create_upg_tower_3();
     all->sprites->upg_tower_4 = create_upg_tower_4();
+    all->sprites->no_upgrades = create_no_upgrades();
     all->sprites->soldier_d_d = create_soldier_d_d();
     all->sprites->soldier_d_u = create_soldier_d_u();
     all->sprites->soldier_u = create_soldier_u();
@@ -34,8 +35,8 @@ void ini_struct_sprites(all_var  *all)
     all->sprites->tower_2_2 = create_tower_2_2();
     all->sprites->tower_3_2 = create_tower_3_2();
     all->sprites->tower_4_2 = create_tower_4_2();
-
-
+    all->sprites->trash = create_trash();
+    all->sprites->game_over = create_game_over();
 }
 
 all_var *init_var_all(void)
@@ -66,13 +67,53 @@ void analayse_events(all_var *all, int page)
     }
 }
 
+void func_sound(all_var *all)
+{
+    if (all->var->sound_on == 0)
+    {
+        all->var->prev_sound = 0;
+        sfMusic_pause(all->sounds->music_game);
+    }
+    else if (all->var->sound_on == 1 && all->var->prev_sound == 0) {
+        all->var->prev_sound = 1;
+        sfMusic_play(all->sounds->music_game);
+    }
+}
+
+void func_fps(all_var *all)
+{
+    if (all->var->fps != all->var->prev_fps)
+    {
+        all->var->prev_fps = all->var->fps;
+        sfRenderWindow_setFramerateLimit(all->windows->window, all->var->fps);
+    }
+    switch (all->var->fps)
+    {
+        case 30:
+            sfSprite_setPosition(all->sprites->tower_1, (sfVector2f){960, 440});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->tower_1, NULL);
+            break;
+        case 60:
+            sfSprite_setPosition(all->sprites->tower_1, (sfVector2f){1260, 440});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->tower_1, NULL);
+            break;
+        case 120:
+            sfSprite_setPosition(all->sprites->tower_1, (sfVector2f){1530, 440});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->tower_1, NULL);
+            break;
+    }
+}
+
 sfRenderWindow *my_window(all_var *all)
 {
     srand(time(NULL));
     all->var->score = 0;
-    all->var->page = 5;
-    
-    //sfMusic_play(all->sounds->music_game);
+    all->var->page = 6;
+    all->var->sound_on = 1;
+    all->var->prev_sound = 1;
+    all->var->prev_fps = 60;
+    all->var->fps = 60;
+    sfMusic_play(all->sounds->music_game);
     scale_images(all);
     while (sfRenderWindow_isOpen(all->windows->window)) {
         sfRenderWindow_clear(all->windows->window, sfBlack);
@@ -125,7 +166,6 @@ void create_soldiers(t_info_soldiers *file)
         tmp->prev = NULL;
     else {
         tmp->prev = tmp2;
-        printf("%d\n", tmp->prev->live);
     }
 }
 ///////////////////////////////////////////////////////
@@ -133,27 +173,29 @@ void create_soldiers(t_info_soldiers *file)
 ///////////////////////////////////////////////////////TOWERS
 sfVector2f save_pos_slot(int num_slot)
 {
-    //despres ho pasem a function pointers
-    if (num_slot == 1)
-        return ((sfVector2f) {305, 500});
-    else if (num_slot == 2)
-        return ((sfVector2f) {420, 235});
-    else if (num_slot == 3)
-        return ((sfVector2f) {840, 265});
-    else if (num_slot == 4)
-        return ((sfVector2f) {1080, 403});
-    else if (num_slot == 5)
-        return ((sfVector2f) {1380, 238});
-    else if (num_slot == 6)
-        return ((sfVector2f) {350, 670});
-    else if (num_slot == 7)
-        return ((sfVector2f) {576, 375});
-    else if (num_slot == 8)
-        return ((sfVector2f) {840, 480});
-    else if (num_slot == 9)
-        return ((sfVector2f) {1325, 515});
-    else if (num_slot == 10)
-        return ((sfVector2f) {1565, 350});
+    switch (num_slot)
+    {
+        case 1:
+            return ((sfVector2f) {305, 500});
+        case 2:
+            return ((sfVector2f) {420, 235});
+        case 3:
+            return ((sfVector2f) {840, 265});
+        case 4:
+            return ((sfVector2f) {1080, 403});
+        case 5:
+            return ((sfVector2f) {1380, 238});
+        case 6:
+            return ((sfVector2f) {350, 670});
+        case 7:
+            return ((sfVector2f) {576, 375});
+        case 8:
+            return ((sfVector2f) {840, 480});
+        case 9:
+            return ((sfVector2f) {1325, 515});
+        case 10:
+            return ((sfVector2f) {1565, 350});
+    }
 }
 
 t_info_slots *init_struc_slots(void)
@@ -170,9 +212,10 @@ t_info_slots *ini_linked_slots(int i)
     if (file == NULL)
         perror("error\n");
     file->prev = NULL;
+    file->show_upgrade = 0;
     file->num_slot = i;
-    file->type_tower = 1;
-    file->level_tower = 100;
+    file->type_tower = 0;
+    file->level_tower = 1;
     file->pos_slot = save_pos_slot(i);
     file->next = NULL;
     return file;
@@ -188,10 +231,9 @@ void create_slots(t_info_slots *file)
         j++;
         tmp = tmp->next;
     }
-    printf("num slot: %d\n", tmp->num_slot);
     tmp->next = ini_linked_slots(j);
-
 }
+
 //////////////////////////////////////////////////////////////
 void my_defender(void)
 {
@@ -211,7 +253,9 @@ void my_defender(void)
         create_slots(all->slots);
         i++;
     }
-
+    all->var->level = 0;
+    all->var->enemy_waves = 0;
+    all->var->money = 1000;
     sfVideoMode video_mode;
     sfRenderWindow *window;
     all->windows->video_mode = (sfVideoMode){1920, 1080, 64};

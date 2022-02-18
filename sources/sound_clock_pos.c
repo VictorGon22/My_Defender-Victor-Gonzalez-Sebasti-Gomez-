@@ -85,7 +85,7 @@ void create_positions(all_var *all)
 
     all->vectors->pos_text = (sfVector2f) {300, 230};
     all->vectors->pos_money = (sfVector2f) {200, 180};
-    all->vectors->select_coin = (sfIntRect) {0, 0, 56, 57};
+    all->vectors->select_coin = (sfIntRect) {0, 0, 56, 57.38};
     all->vectors->select_character = (sfIntRect) {0, 0, 300, 240};
     all->vectors->select_live = (sfIntRect) {0, 10, 200, 30};
     all->vectors->pos_character = (sfVector2f) {0, 700};

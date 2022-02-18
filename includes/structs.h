@@ -30,6 +30,7 @@
         sfSprite *upg_tower_2;
         sfSprite *upg_tower_3;
         sfSprite *upg_tower_4;
+        sfSprite *no_upgrades;
         sfSprite *soldier_d_d;
         sfSprite *soldier_d_u;
         sfSprite *soldier_u;
@@ -43,6 +44,8 @@
         sfSprite *portada;
         sfSprite *settings;
         sfSprite *shop;
+        sfSprite *trash;
+        sfSprite *game_over;
     } sprites_var;
 
     //STRUCT CLOCKS
@@ -95,7 +98,7 @@
         sfIntRect select_character;
         sfIntRect select_live;
 
-        //POS TORRES MAP 1
+    //POS TORRES MAP 1
         sfVector2f pos_tower_slot1;
         sfVector2f pos_tower_slot2;
         sfVector2f pos_tower_slot3;
@@ -122,12 +125,15 @@
         int page;
         int prevpage;
         int sound_on;
+        int prev_sound;
         int fps;
+        int prev_fps;
         int level;
         int num_lives;
         int enemy_waves;
         int score;
         int money;
+        int tower_type;
     } t_var;
 
     //STRUCT INFO_TOWERS
@@ -146,6 +152,7 @@
 
     typedef struct s_info_slots {
         int num_slot;
+        int show_upgrade;
         int type_tower;
         int level_tower;
         sfVector2f pos_slot;
@@ -165,8 +172,6 @@
         struct s_info_soldiers *soldiers;
         struct s_var *var;
     } all_var;
-
-
 
     typedef struct s_button {
         sfVector2i but;

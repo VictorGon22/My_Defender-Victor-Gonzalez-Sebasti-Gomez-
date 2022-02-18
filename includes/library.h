@@ -28,11 +28,17 @@ void print_page_mainmenu(all_var *all);
 void print_page_settings(all_var *all);
 void print_page_levels(all_var *all);
 void print_page_game(all_var *all);
+void print_game_over(all_var *all);
 void scale_images(all_var *all);
 void create_msg (all_var *all);
 char *my_return_time(int nb);
-
+sfVector2f save_pos_slot(int num_slot);
+void func_fps(all_var *all);
 char *my_revstr(char *str);
+void func_sound(all_var *all);
+void print_upgrade(all_var *all, int num_slot);
+void create_soldiers(t_info_soldiers *file);
+t_info_soldiers *ini_linked_soldiers(int i);
 
 sfSprite *create_white(void);
 
@@ -44,6 +50,7 @@ sfSprite *create_tower_1_2(void);
 sfSprite *create_tower_2_2(void);
 sfSprite *create_tower_3_2(void);
 sfSprite *create_tower_4_2(void);
+sfSprite *create_no_upgrades(void);
 sfSprite *create_upg_tower_1(void);
 sfSprite *create_upg_tower_2(void);
 sfSprite *create_upg_tower_3(void);
@@ -61,6 +68,7 @@ sfSprite *create_mainmenu(void);
 sfSprite *create_portada(void);
 sfSprite *create_settings(void);
 sfSprite *create_shop(void);
-
+sfSprite *create_trash(void);
+sfSprite *create_game_over(void);
 
 #endif
