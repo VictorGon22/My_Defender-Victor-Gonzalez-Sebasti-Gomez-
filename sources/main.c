@@ -39,6 +39,11 @@ void ini_struct_sprites(all_var  *all)
     all->sprites->trash = create_trash();
     all->sprites->shine = create_shine();
     all->sprites->game_over = create_game_over();
+    all->sprites->lose = create_lose();
+    all->sprites->win = create_win();
+    all->sprites->light_button = create_light_button();
+    all->sprites->light_play = create_light_play();
+    all->sprites->light_small = create_light_small();
 }
 
 all_var *init_var_all(void)
@@ -110,7 +115,7 @@ sfRenderWindow *my_window(all_var *all)
 {
     srand(time(NULL));
     all->var->score = 0;
-    all->var->page = 2;
+    all->var->page = 3;
     all->var->sound_on = 1;
     all->var->enemy_killed = 0;
     all->var->prev_sound = 1;

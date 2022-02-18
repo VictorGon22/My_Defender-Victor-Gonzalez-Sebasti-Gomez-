@@ -73,5 +73,10 @@ sfSprite *create_settings(void);
 sfSprite *create_shop(void);
 sfSprite *create_trash(void);
 sfSprite *create_game_over(void);
+sfSprite *create_lose(void);
+sfSprite *create_win(void);
+sfSprite *create_light_button(void);
+sfSprite *create_light_play(void);
+sfSprite *create_light_small(void);
 
 #endif

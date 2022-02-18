@@ -99,6 +99,8 @@ void scale_images(all_var *all)
     sfSprite_scale(all->sprites->castle_live, (sfVector2f){2, 2});
     sfSprite_scale(all->sprites->trash, (sfVector2f){0.3, 0.3});
     sfSprite_scale(all->sprites->shine, (sfVector2f){0.5, 0.5});
+    sfSprite_scale(all->sprites->win, (sfVector2f){0.6, 0.6});
+    sfSprite_scale(all->sprites->lose, (sfVector2f){0.6, 0.6});
 }
 
 void print_page_portada(all_var *all)
@@ -111,8 +113,9 @@ void print_page_portada(all_var *all)
 
 void page_mainmenu(all_var *all)
 {
-    new_button *back_button = create_button(69, 27, 170, 130);
-    new_button *levels_button = create_button(680, 420, 500, 170);
+    new_button *back_button = create_button(69, 17, 170, 130);
+    new_button *levels_button = create_button(680, 400, 500, 170);
+    new_button *tutorial_button = create_button(680, 152, 500, 170);
     new_button *play_button = create_button(600, 650, 670, 270);
     new_button *settings_button = create_button(1645, 27, 170, 130);
 
@@ -134,6 +137,23 @@ void page_mainmenu(all_var *all)
             all->var->page = 3;
         }
         sfClock_restart(all->clocks->clock_button);
+    }else {
+        if (is_button_pressed(back_button, all) == 1) {
+           sfSprite_setPosition(all->sprites->light_small, (sfVector2f){67, 50});
+           sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(tutorial_button, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_button, (sfVector2f){662, 190});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_button, NULL);
+        } else if (is_button_pressed(settings_button, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){1622, 50});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(levels_button, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_button, (sfVector2f){662, 450});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_button, NULL);
+        } else if (is_button_pressed(play_button, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_play, (sfVector2f){575, 695});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_play, NULL);
+        }
     }
 }
 
@@ -149,13 +169,13 @@ void print_page_mainmenu(all_var *all)
 void page_settings(all_var *all)
 {
     new_button *back_button = create_button(69, 27, 170, 130);
-    new_button *music_off = create_button(920, 150, 170, 130);
-    new_button *music_on = create_button(1220, 150, 170, 130);
-    new_button *fps_30 = create_button(920, 460, 170, 130);
-    new_button *fps_60 = create_button(1220, 460, 170, 130);
-    new_button *fps_120 = create_button(1500, 460, 170, 130);
-    new_button *hd_button = create_button(930, 770, 170, 130);
-    new_button *fhd_button = create_button(1220, 770, 170, 130);
+    new_button *music_off = create_button(930, 80, 170, 130);
+    new_button *music_on = create_button(1220, 80, 170, 130);
+    new_button *fps_30 = create_button(920, 400, 170, 130);
+    new_button *fps_60 = create_button(1220, 400, 170, 130);
+    new_button *fps_120 = create_button(1500, 400, 170, 130);
+    new_button *hd_button = create_button(930, 700, 170, 130);
+    new_button *fhd_button = create_button(1220, 700, 170, 130);
 
     all->clocks->time_button = sfClock_getElapsedTime(all->clocks->clock_button);
     if (all->windows->event.type == sfEvtMouseButtonPressed
@@ -178,6 +198,33 @@ void page_settings(all_var *all)
             all->var->level = 3;
         }
         sfClock_restart(all->clocks->clock_button);
+    }
+    else {
+        if (is_button_pressed(back_button, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){67, 50});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(music_off, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){915, 125});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(music_on, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){1205, 125});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(fps_30, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){912, 445});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(fps_60, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){1202, 445});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(fps_120, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){1485, 445});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(hd_button, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){917, 745});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(fhd_button, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_small, (sfVector2f){1205, 745});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        }
     }
 }
 
@@ -215,6 +262,21 @@ void page_levels(all_var *all)
             all->var->page = 2;
         }
         sfClock_restart(all->clocks->clock_button);
+    }
+    else {
+        if (is_button_pressed(back_button, all) == 1) {
+           sfSprite_setPosition(all->sprites->light_small, (sfVector2f){67, 50});
+           sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_small, NULL);
+        } else if (is_button_pressed(levels1, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_button, (sfVector2f){660, 190});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_button, NULL);
+        } else if (is_button_pressed(levels2, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_button, (sfVector2f){660, 450});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_button, NULL);
+        } else if (is_button_pressed(levels3, all) == 1) {
+            sfSprite_setPosition(all->sprites->light_button, (sfVector2f){660, 695});
+            sfRenderWindow_drawSprite(all->windows->window, all->sprites->light_button, NULL);
+        }
     }
 }
 
@@ -401,7 +463,6 @@ void print_castle_live(all_var *all)
     sfSprite_setPosition(all->sprites->castle_live, (sfVector2f) {1350, 900});
     sfSprite_setTextureRect(all->sprites->castle_live,  all->vectors->select_live);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->castle_live, NULL);
-
 }
 
 void print_char(all_var *all, t_info_soldiers *tmp)
@@ -426,7 +487,7 @@ void print_char(all_var *all, t_info_soldiers *tmp)
     }
     else if (tmp->pos_soldier.x >= 970 && tmp->pos_soldier.x <= 1150)  { //ST
         tmp->velocity_soldier = (sfVector2f) {3 + (all->var->level * 2), 0};
-        tmp->damage = 25;////////////////////7PROVA PER FERIR-LOS
+        tmp->damage = 25;//////////////////// PROVA PER FERIR-LOS
         print_soldier_run(all, tmp);
     }
     else if (tmp->pos_soldier.x >= 1150 && tmp->pos_soldier.x <= 1500)  { // D_U
@@ -556,7 +617,6 @@ void upgrade_buttons(all_var *all, int num_slot)
         temp = temp->next;
     all->clocks->time_button = 
     sfClock_getElapsedTime(all->clocks->clock_button);
-    printf("%f\n", sfTime_asSeconds(all->clocks->time_button));
     if (all->windows->event.type == sfEvtMouseButtonPressed && 
     sfTime_asSeconds(all->clocks->time_button) > 0.1
     && is_button_pressed(temp->upgrade_button, all) == 1) {
@@ -565,17 +625,6 @@ void upgrade_buttons(all_var *all, int num_slot)
         sfClock_restart(all->clocks->clock_button);
     }
 }
-
-/*
-void print_upgrade2(all_var *all, int num_slot, sfVector2f pos, sfSprites *tower_upgrade)
-{
-    sfSprite_setPosition(tower_upgrade, pos);
-    sfRenderWindow_drawSprite(all->windows->window, tower_upgrade, NULL);
-    upgrade_buttons(all, num_slot);
-}
-
-*/
-
 
 void print_upgrade(all_var *all, int num_slot)
 {
@@ -793,14 +842,13 @@ void print_page_game(all_var *all)
     sfSprite_setPosition(all->sprites->background, all->vectors->pos_origin);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->background, NULL);
     
-    if (all->var->enemy_waves > 1 && all_enemies_dead_pass(all) != 0) {
+    if (all->var->enemy_waves > 10 && all_enemies_dead_pass(all) != 0) {
         all->var->page = 6;
     }
-    if (all->var->enemy_waves <= 1 && all_enemies_dead_pass(all) != 0 ) {
+    if (all->var->enemy_waves <= 10 && all_enemies_dead_pass(all) != 0 ) {
         set_num_soldiers(all);
         all->var->enemy_waves++;
     }
-
 
     /////// STEPS SOUND
 
@@ -889,6 +937,18 @@ void print_game_over(all_var *all)
     game_over_page(all);
     sfSprite_setPosition(all->sprites->game_over, all->vectors->pos_origin);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->game_over, NULL);
+
+    if (all->var->num_lives > 0) {
+        sfSprite_setPosition(all->sprites->win, (sfVector2f) {760, 240});
+        sfRenderWindow_drawSprite(all->windows->window, all->sprites->win, NULL);
+    }
+    else {
+        sfSprite_setPosition(all->sprites->lose, (sfVector2f) {760, 240});
+        sfRenderWindow_drawSprite(all->windows->window, all->sprites->lose, NULL);
+    }
+
+
+
     sfText_setCharacterSize(all->texts->text2, 70);
     sfText_setColor(all->texts->text2, sfColor_fromRGB(255, 255, 255));//213, 153, 65
 

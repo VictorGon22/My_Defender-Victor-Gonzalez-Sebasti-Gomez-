@@ -48,6 +48,11 @@
         sfSprite *game_over;
         sfSprite *soldier_health;
         sfSprite *shine;
+        sfSprite *lose;
+        sfSprite *win;
+        sfSprite *light_button;
+        sfSprite *light_play;
+        sfSprite *light_small;
     } sprites_var;
 
     //STRUCT CLOCKS
