@@ -39,9 +39,11 @@ void func_sound(all_var *all);
 void print_upgrade(all_var *all, int num_slot);
 void create_soldiers(t_info_soldiers *file);
 t_info_soldiers *ini_linked_soldiers(int i);
-
+new_button *create_button(int x, int y, int size_x, int size_y);
+t_info_slots *ini_linked_slots(int i);
 sfSprite *create_white(void);
-
+void shop_buttons(all_var *all);
+sfSprite *create_shine(void);
 sfSprite *create_tower_1(void);
 sfSprite *create_tower_2(void);
 sfSprite *create_tower_3(void);
@@ -59,6 +61,7 @@ sfSprite *create_soldier_d_d(void);
 sfSprite *create_soldier_d_u(void);
 sfSprite *create_soldier_u(void);
 sfSprite *create_soldier_run(void);
+sfSprite *create_soldier_health(void);
 sfSprite *create_background(void);
 sfSprite *create_castle_live(void);
 sfSprite *create_coin(void);

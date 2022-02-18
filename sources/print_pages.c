@@ -76,6 +76,7 @@ void scale_images(all_var *all)
     sfSprite_scale(all->sprites->soldier_u, (sfVector2f){0.6, 0.6});
     sfSprite_scale(all->sprites->soldier_d_d, (sfVector2f){0.6, 0.6});
     sfSprite_scale(all->sprites->soldier_d_u, (sfVector2f){0.6, 0.6});
+    sfSprite_scale(all->sprites->soldier_health, (sfVector2f){0.2, 0.2});
     sfSprite_scale(all->sprites->portada, (sfVector2f){0.98, 0.98});
     sfSprite_scale(all->sprites->mainmenu, (sfVector2f){0.98, 0.98});
     sfSprite_scale(all->sprites->settings, (sfVector2f){0.98, 0.98});
@@ -97,6 +98,7 @@ void scale_images(all_var *all)
     sfSprite_scale(all->sprites->coin, (sfVector2f){0.3, 0.3});
     sfSprite_scale(all->sprites->castle_live, (sfVector2f){2, 2});
     sfSprite_scale(all->sprites->trash, (sfVector2f){0.3, 0.3});
+    sfSprite_scale(all->sprites->shine, (sfVector2f){0.5, 0.5});
 }
 
 void print_page_portada(all_var *all)
@@ -122,8 +124,10 @@ void page_mainmenu(all_var *all)
         } else if (is_button_pressed(levels_button, all) == 1) {
             all->var->page = 4;
         } else if (is_button_pressed(play_button, all) == 1) {
-            if (all->var->level != 0)
+            if (all->var->level != 0) {
                 all->var->page = 5;
+                sfClock_restart(all->clocks->clock_timeplaying);
+            }
             else
                 all->var->page = 4;
         } else if (is_button_pressed(settings_button, all) == 1) {
@@ -222,6 +226,13 @@ void print_page_levels(all_var *all)
     sfRenderWindow_display(all->windows->window);
 }
 
+void change_char_health (sfIntRect *select_char)
+{
+    select_char->top += 50;
+    if (select_char->top >= 450)
+        select_char->top = 0;
+}
+
 void change_char (sfIntRect *select_char)
 {
     select_char->left += 300;
@@ -263,6 +274,20 @@ sfVector2f pos_money(all_var *all)
         return (pos_money2(all));
 }
 
+void print_soldier_health(all_var *all, t_info_soldiers *tmp)
+{
+    sfVector2f pos = tmp->pos_soldier;
+    pos.x += 40;
+    sfSprite_setPosition(all->sprites->soldier_health, pos);
+    if (tmp->damage >= 25) {
+        change_char_health(&tmp->select_soldier_health);
+        tmp->damage = 0;
+        tmp->live -= 25;
+    }
+    sfSprite_setTextureRect(all->sprites->soldier_health,  tmp->select_soldier_health);
+    sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_health, NULL);
+}
+
 void print_soldier_run(all_var *all, t_info_soldiers *tmp)
 {
     sfSprite_setPosition(all->sprites->soldier_run, tmp->pos_soldier);
@@ -270,6 +295,7 @@ void print_soldier_run(all_var *all, t_info_soldiers *tmp)
     tmp->pos_soldier = sfSprite_getPosition(all->sprites->soldier_run);
     sfSprite_setTextureRect(all->sprites->soldier_run,  all->vectors->select_character);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_run, NULL);
+    print_soldier_health(all, tmp);
 }
 
 void print_soldier_d_u(all_var *all,  t_info_soldiers *tmp)
@@ -279,6 +305,7 @@ void print_soldier_d_u(all_var *all,  t_info_soldiers *tmp)
     tmp->pos_soldier = sfSprite_getPosition(all->sprites->soldier_d_u);
     sfSprite_setTextureRect(all->sprites->soldier_d_u,  all->vectors->select_character);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_d_u, NULL);
+    print_soldier_health(all, tmp);
 }
 
 void print_soldier_d_d(all_var *all,  t_info_soldiers *tmp)
@@ -288,6 +315,7 @@ void print_soldier_d_d(all_var *all,  t_info_soldiers *tmp)
     tmp->pos_soldier = sfSprite_getPosition(all->sprites->soldier_d_d);
     sfSprite_setTextureRect(all->sprites->soldier_d_d,  all->vectors->select_character);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_d_d, NULL);
+    print_soldier_health(all, tmp);
 }
 
 void print_soldier_u(all_var *all,  t_info_soldiers *tmp)
@@ -297,12 +325,12 @@ void print_soldier_u(all_var *all,  t_info_soldiers *tmp)
     sfSprite_setTextureRect(all->sprites->soldier_u,  all->vectors->select_character);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->soldier_u, NULL);
     tmp->pos_soldier = sfSprite_getPosition(all->sprites->soldier_u);
+    print_soldier_health(all, tmp);
 }
 
 void print_tower_in_slot(all_var *all, t_info_slots *tmp_slots)
 {
-    switch (tmp_slots->type_tower)
-    {
+    switch (tmp_slots->type_tower) {
         case 1:
             sfSprite_setPosition(all->sprites->tower_1_2, tmp_slots->pos_slot);
             sfRenderWindow_drawSprite(all->windows->window, all->sprites->tower_1_2, NULL);
@@ -351,6 +379,7 @@ void print_shop3(all_var *all)
 
 void print_shop2(all_var *all)
 {
+    sfText_setCharacterSize(all->texts->text2, 30);
     sfText_setCharacterSize(all->texts->text, 30);
     sfText_setString(all->texts->text2, "Rock tower");
     sfText_setPosition(all->texts->text2, (sfVector2f){350, 100});
@@ -372,6 +401,7 @@ void print_castle_live(all_var *all)
     sfSprite_setPosition(all->sprites->castle_live, (sfVector2f) {1350, 900});
     sfSprite_setTextureRect(all->sprites->castle_live,  all->vectors->select_live);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->castle_live, NULL);
+
 }
 
 void print_char(all_var *all, t_info_soldiers *tmp)
@@ -396,6 +426,7 @@ void print_char(all_var *all, t_info_soldiers *tmp)
     }
     else if (tmp->pos_soldier.x >= 970 && tmp->pos_soldier.x <= 1150)  { //ST
         tmp->velocity_soldier = (sfVector2f) {3 + (all->var->level * 2), 0};
+        tmp->damage = 25;////////////////////7PROVA PER FERIR-LOS
         print_soldier_run(all, tmp);
     }
     else if (tmp->pos_soldier.x >= 1150 && tmp->pos_soldier.x <= 1500)  { // D_U
@@ -407,13 +438,19 @@ void print_char(all_var *all, t_info_soldiers *tmp)
             change_live(&all->vectors->select_live);
             tmp->live = 0;
         }
+        all->var->num_lives--;
+        if (all->var->num_lives == 0)
+            all->var->page = 6;
     }
+    if (tmp->live == 0 & tmp->pos_soldier.x < 1500)
+        all->var->enemy_killed++;
 }
 
 void print_shop(all_var *all)
 {
     sfSprite_setPosition(all->sprites->shop, (sfVector2f){100, -20});
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->shop, NULL);
+    shop_buttons(all);
     sfSprite_setPosition(all->sprites->tower_1, all->vectors->pos_tower_1_shop);
     sfSprite_setPosition(all->sprites->tower_2, all->vectors->pos_tower_2_shop);
     sfSprite_setPosition(all->sprites->tower_3, all->vectors->pos_tower_3_shop);
@@ -443,10 +480,10 @@ void show_upgrade(t_info_slots *tmp_slots)
         tmp_slots->show_upgrade = 0;
 }
 
-void write_tower_in_slot(all_var *all, int num_slot, int type_tower)
+void write_tower_in_slot(all_var *all, int num_slot, int type_tower) // Crear aqui els butons per millorar
 {
     t_info_slots *tmp_slots = all->slots->next;
-
+    
     while (tmp_slots->next != NULL) {
         if (tmp_slots->num_slot == num_slot) {
             if (tmp_slots->type_tower != 0)
@@ -454,8 +491,13 @@ void write_tower_in_slot(all_var *all, int num_slot, int type_tower)
             if (tmp_slots->type_tower == 0 
             && all->var->money >= all->var->tower_type * 100) {
                 tmp_slots->type_tower = type_tower;
+                sfSound_play(all->sounds->money);
                 all->var->money -= all->var->tower_type * 100;
                 all->var->tower_type = 0;
+            }
+            else if (tmp_slots->type_tower == 0 
+            && all->var->money < all->var->tower_type * 100) {
+                sfSound_play(all->sounds->wrong);
             }
         }
         tmp_slots = tmp_slots->next;
@@ -495,7 +537,8 @@ void print_tower_in_mouse(all_var *all)
 
 int get_tower_type(all_var *all, int num_slot)
 {
-    t_info_slots *tmp_slots = all->slots->next;
+    t_info_slots *tmp_slots = all->slots
+    ;
 
     while (tmp_slots->next != NULL) {
         if (tmp_slots->num_slot == num_slot)
@@ -505,26 +548,60 @@ int get_tower_type(all_var *all, int num_slot)
     return (0);
 }
 
+void upgrade_buttons(all_var *all, int num_slot)
+{
+    t_info_slots *temp = all->slots->next;
+
+    while (temp->num_slot != num_slot && temp->next != NULL)
+        temp = temp->next;
+    all->clocks->time_button = 
+    sfClock_getElapsedTime(all->clocks->clock_button);
+    printf("%f\n", sfTime_asSeconds(all->clocks->time_button));
+    if (all->windows->event.type == sfEvtMouseButtonPressed && 
+    sfTime_asSeconds(all->clocks->time_button) > 0.1
+    && is_button_pressed(temp->upgrade_button, all) == 1) {
+        temp->level_tower += 1;
+        sfSound_play(all->sounds->upgrade);
+        sfClock_restart(all->clocks->clock_button);
+    }
+}
+
+/*
+void print_upgrade2(all_var *all, int num_slot, sfVector2f pos, sfSprites *tower_upgrade)
+{
+    sfSprite_setPosition(tower_upgrade, pos);
+    sfRenderWindow_drawSprite(all->windows->window, tower_upgrade, NULL);
+    upgrade_buttons(all, num_slot);
+}
+
+*/
+
+
 void print_upgrade(all_var *all, int num_slot)
 {
     sfVector2f pos = save_pos_slot(num_slot);
     int tower_type = get_tower_type(all, num_slot);
+
     switch (tower_type) {
         case 1:
             sfSprite_setPosition(all->sprites->upg_tower_1, pos);
             sfRenderWindow_drawSprite(all->windows->window, all->sprites->upg_tower_1, NULL);
+            upgrade_buttons(all, num_slot);
             break;
         case 2:
             sfSprite_setPosition(all->sprites->upg_tower_2, pos);
             sfRenderWindow_drawSprite(all->windows->window, all->sprites->upg_tower_2, NULL);
+            upgrade_buttons(all, num_slot);
             break;
         case 3:
             sfSprite_setPosition(all->sprites->upg_tower_3, pos);
             sfRenderWindow_drawSprite(all->windows->window, all->sprites->upg_tower_3, NULL);
+            upgrade_buttons(all, num_slot);
             break;
         case 4:
             sfSprite_setPosition(all->sprites->upg_tower_4, pos);
             sfRenderWindow_drawSprite(all->windows->window, all->sprites->upg_tower_4, NULL);
+            upgrade_buttons(all, num_slot);
             break;
     }
 }
@@ -557,8 +634,20 @@ void shop_buttons(all_var *all)
         } else if (is_button_pressed(tower4_button, all) == 1) {
             all->var->tower_type = 4;
         }
-        //sfClock_restart(all->clocks->clock_button);
     }
+    else {
+        if (is_button_pressed(tower1_button, all) == 1)
+            sfSprite_setPosition(all->sprites->shine, (sfVector2f){395, 60});
+        else if (is_button_pressed(tower2_button, all) == 1)
+            sfSprite_setPosition(all->sprites->shine, (sfVector2f){695, 60});
+        else if (is_button_pressed(tower3_button, all) == 1)
+            sfSprite_setPosition(all->sprites->shine, (sfVector2f){995, 60});
+        else if (is_button_pressed(tower4_button, all) == 1)
+            sfSprite_setPosition(all->sprites->shine, (sfVector2f){1295, 60});
+        else
+            sfSprite_setPosition(all->sprites->shine, (sfVector2f){-100, -100});
+    }
+    sfRenderWindow_drawSprite(all->windows->window, all->sprites->shine, NULL);
 }
 
 void slots_buttons(all_var *all)
@@ -621,6 +710,7 @@ void print_level(all_var *all, t_info_slots *tmp_slots)
         sfVector2f pos = tmp_slots->pos_slot;
         pos.y += 200;
         pos.x += 32;
+        
         sfText_setColor(all->texts->text2, sfColor_fromRGB(255, 255, 255));
         sfText_setCharacterSize(all->texts->text2, 20);
         sfText_setPosition(all->texts->text2, pos);
@@ -640,14 +730,14 @@ int all_enemies_dead_pass(all_var *all)
     t_info_soldiers *tmp = all->soldiers->next;
 
     while (i < all->var->enemy_waves) {
-        //printf("num: %d %f %d\n", tmp->num_soldier, tmp->pos_soldier.x, tmp->live);
         if (tmp->live > 0) {
             return (0);
         }
         tmp = tmp->next;
         i++;
     }
-    printf("SI\n");
+    all->var->sound_steps = 0;
+    sfClock_restart(all->clocks->clock_between_waves);
     return (1);
 }
 
@@ -655,32 +745,78 @@ void set_num_soldiers(all_var *all)
 {
     int i = 0;
     t_info_soldiers *tmp = all->soldiers->next;
-    printf("ENTRA1\n");
-    while (i < all->var->enemy_waves) {
-        printf("%d", all->var->enemy_waves);
-        tmp->live = 100;
-        tmp->pos_soldier = (sfVector2f) {0, 700};
-        printf("num: %d %f %d\n", tmp->num_soldier, tmp->pos_soldier.x, tmp->live);
+
+    while (tmp != NULL) {
+        if (i < all->var->enemy_waves) {
+            tmp->live = 100;
+            tmp->pos_soldier = (sfVector2f) {0, 700};
+            tmp->select_soldier_health =  (sfIntRect) {0, 0, 450, 50};
+        }
+        else {
+            tmp->live = 0;
+            tmp->pos_soldier = (sfVector2f) {0, 700};
+            tmp->select_soldier_health =  (sfIntRect) {0, 0, 450, 50};
+        }
         i++;
         tmp = tmp->next;
     }
+    sfClock_restart(all->clocks->clock_between_waves);
+}
+
+void reset_game(all_var *all)
+{
+    t_info_slots *tmp = all->slots->next;
+
+    while (tmp != NULL) {
+        tmp->type_tower = 0;
+        tmp->level_tower = 1;
+        tmp->show_upgrade = 0;
+        tmp = tmp->next;
+    }
+
+    all->var->enemy_waves = 1;
+    all->var->num_lives = 5;
+    all->var->money = 1000;
+    all->var->score = 0;
+    all->var->enemy_killed = 0;
+    sfClock_restart(all->clocks->clock_timeplaying);
 }
 
 void print_page_game(all_var *all)
 {   
+    int i = 0;
+    int restart_clock = 1;
     // POT VARIAR SEGONS EL NIVELL SERA UN SPRITE O UN ALTRE
+    all->clocks->time_playing= sfClock_getElapsedTime(all->clocks->clock_timeplaying);
+    all->clocks->time_between_waves= sfClock_getElapsedTime(all->clocks->clock_between_waves);
+    
     sfSprite_setPosition(all->sprites->background, all->vectors->pos_origin);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->background, NULL);
-    int i = 0;
-    if (all->var->enemy_waves == 10)
+    
+    if (all->var->enemy_waves > 1 && all_enemies_dead_pass(all) != 0) {
         all->var->page = 6;
-    if (all->var->enemy_waves == 0 || all_enemies_dead_pass(all) == 1) {
+    }
+    if (all->var->enemy_waves <= 1 && all_enemies_dead_pass(all) != 0 ) {
         set_num_soldiers(all);
         all->var->enemy_waves++;
     }
+
+
+    /////// STEPS SOUND
+
+    if (all_enemies_dead_pass(all) == 0 && all->var->sound_steps == 0 && all->var->sound_on == 1) {
+        sfMusic_play(all->sounds->soldiers_steps);
+        all->var->sound_steps = 1;
+    }
+    else if (all_enemies_dead_pass(all) != 0 && all->var->sound_steps == 1 || all->var->sound_on == 0){
+        sfMusic_pause(all->sounds->soldiers_steps);
+
+    }
+    /////// STEPS SOUND END
+
     //SHOP
     print_shop(all);
-    shop_buttons(all);
+    //shop_buttons(all);
     slots_buttons(all);
     delete_selection(all);
 
@@ -728,8 +864,10 @@ void print_page_game(all_var *all)
 void game_over_page(all_var *all)
 {
     new_button *exit_button = create_button(1265, 120, 95, 90);
-    new_button *main = create_button(565, 845, 370, 170);
-    new_button *play_again = create_button(1000, 845, 370, 170);
+    new_button *main = create_button(565, 745, 370, 170);
+    new_button *play_again = create_button(1000, 745, 370, 170);
+
+    sfMusic_pause(all->sounds->soldiers_steps);
 
     all->clocks->time_button = sfClock_getElapsedTime(all->clocks->clock_button);
     if (all->windows->event.type == sfEvtMouseButtonPressed
@@ -740,6 +878,7 @@ void game_over_page(all_var *all)
             all->var->page = 2;
         } else if (is_button_pressed(play_again, all) == 1) {
             all->var->page = 5;
+            reset_game(all);
         }
         sfClock_restart(all->clocks->clock_button);
     }
@@ -750,18 +889,18 @@ void print_game_over(all_var *all)
     game_over_page(all);
     sfSprite_setPosition(all->sprites->game_over, all->vectors->pos_origin);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->game_over, NULL);
-    sfText_setColor(all->texts->text2, sfColor_fromRGB(255, 255, 255));
     sfText_setCharacterSize(all->texts->text2, 70);
+    sfText_setColor(all->texts->text2, sfColor_fromRGB(255, 255, 255));//213, 153, 65
 
     sfText_setPosition(all->texts->text2, (sfVector2f) {1100, 360});
     sfText_setString(all->texts->text2, my_return_time(all->var->enemy_killed));
     sfRenderWindow_drawText(all->windows->window, all->texts->text2, NULL);
     sfText_setPosition(all->texts->text2, (sfVector2f) {1100, 480});
-    sfText_setString(all->texts->text2, my_return_time(all->var->enemy_waves));
+    sfText_setString(all->texts->text2, my_return_time(all->var->enemy_waves - 1));
     sfRenderWindow_drawText(all->windows->window, all->texts->text2, NULL);    
     sfText_setPosition(all->texts->text2, (sfVector2f) {1100, 615});
-    sfText_setString(all->texts->text2, my_return_time(all->var->enemy_waves));
-    sfRenderWindow_drawText(all->windows->window, all->texts->text2, NULL);  
+    sfText_setString(all->texts->text2, my_return_time(sfTime_asSeconds(all->clocks->time_playing)));
+    sfRenderWindow_drawText(all->windows->window, all->texts->text2, NULL);
     
     sfRenderWindow_display(all->windows->window);
 }

@@ -46,6 +46,8 @@
         sfSprite *shop;
         sfSprite *trash;
         sfSprite *game_over;
+        sfSprite *soldier_health;
+        sfSprite *shine;
     } sprites_var;
 
     //STRUCT CLOCKS
@@ -55,15 +57,21 @@
         sfClock *clock_button;
         sfClock *clock_button2;
         sfClock *clock_live;
+        sfClock *clock_timeplaying;
+        sfClock *clock_between_waves;
         sfTime time;
+        sfTime time_playing;
         sfTime time_char;
         sfTime time_button;
         sfTime time_button2;
         sfTime time_live;
+        sfTime time_between_waves;
     } clocks_var;
 
     //STRUCT SOUNDS    
     typedef struct s_sound_var {
+        sfSound *money;
+        sfSound *wrong;
         sfSound *sound_button;
         sfSound *laser;
         sfSound *electric;
@@ -94,9 +102,11 @@
         sfVector2f pos_character;
         sfVector2f pos_actual;
         sfVector2f velocity_character; 
+
         sfIntRect select_coin;
         sfIntRect select_character;
         sfIntRect select_live;
+        sfIntRect select_soldier_health;
 
     //POS TORRES MAP 1
         sfVector2f pos_tower_slot1;
@@ -135,6 +145,7 @@
         int score;
         int money;
         int tower_type;
+        int sound_steps;
     } t_var;
 
     //STRUCT INFO_TOWERS
@@ -146,8 +157,10 @@
     typedef struct s_info_soldiers {
         int num_soldier;
         int live;
+        int damage;
         sfVector2f pos_soldier;
         sfVector2f velocity_soldier;
+        sfIntRect select_soldier_health;
         struct s_info_soldiers *prev;
         struct s_info_soldiers *next;
     } t_info_soldiers;
@@ -159,6 +172,7 @@
         int type_tower;
         int level_tower;
         sfVector2f pos_slot;
+        struct s_button *upgrade_button;
         struct s_info_slots *prev;
         struct s_info_slots *next;
     } t_info_slots;

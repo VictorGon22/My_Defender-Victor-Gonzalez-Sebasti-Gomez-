@@ -9,6 +9,14 @@
 
 void create_sounds(all_var *all)
 {
+    all->sounds->buffer = sfSoundBuffer_createFromFile("./sounds/money_expended.wav");
+    all->sounds->money = sfSound_create();
+    sfSound_setBuffer(all->sounds->money, all->sounds->buffer);
+
+    all->sounds->buffer = sfSoundBuffer_createFromFile("./sounds/wrong.wav");
+    all->sounds->wrong = sfSound_create();
+    sfSound_setBuffer(all->sounds->wrong, all->sounds->buffer);
+
     all->sounds->buffer = sfSoundBuffer_createFromFile("./sounds/electric.wav");
     all->sounds->electric = sfSound_create();
     sfSound_setBuffer(all->sounds->electric, all->sounds->buffer);
@@ -31,8 +39,8 @@ void create_sounds(all_var *all)
     sfSound_setBuffer(all->sounds->laser, all->sounds->buffer);
 
     all->sounds->buffer = sfSoundBuffer_createFromFile("./sounds/upgrade.wav");
-    all->sounds->electric = sfSound_create();
-    sfSound_setBuffer(all->sounds->electric, all->sounds->buffer);
+    all->sounds->upgrade = sfSound_create();
+    sfSound_setBuffer(all->sounds->upgrade, all->sounds->buffer);
 
     all->sounds->music_game = sfMusic_createFromFile("./sounds/game_music.wav");
     sfMusic_setLoop(all->sounds->music_game, sfTrue);
@@ -48,6 +56,8 @@ void create_clocks(all_var *all)
     all->clocks->clock_button = sfClock_create();
     all->clocks->clock_button2 = sfClock_create();
     all->clocks->clock_live = sfClock_create();
+    all->clocks->clock_timeplaying = sfClock_create();
+    all->clocks->clock_between_waves = sfClock_create();
 }
 
 void create_msg (all_var *all)
@@ -87,6 +97,10 @@ void create_positions(all_var *all)
     all->vectors->pos_money = (sfVector2f) {200, 180};
     all->vectors->select_coin = (sfIntRect) {0, 0, 56, 57.38};
     all->vectors->select_character = (sfIntRect) {0, 0, 300, 240};
+    all->vectors->select_soldier_health = (sfIntRect) {0, 0, 450, 100};
+
+
+
     all->vectors->select_live = (sfIntRect) {0, 10, 200, 30};
     all->vectors->pos_character = (sfVector2f) {0, 700};
     all->vectors->pos_actual = (sfVector2f) {0, 700};

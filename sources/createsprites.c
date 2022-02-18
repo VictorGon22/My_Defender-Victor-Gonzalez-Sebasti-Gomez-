@@ -161,6 +161,15 @@ sfSprite *create_soldier_run(void)
     return (sprite_bend);
 }
 
+sfSprite *create_soldier_health(void)
+{
+    sfTexture *texture_bend = sfTexture_createFromFile
+    ("./images/game/soldiers/soldiers_live.png", NULL);
+    sfSprite *sprite_bend = sfSprite_create();
+    sfSprite_setTexture(sprite_bend, texture_bend, 0);
+    return (sprite_bend);
+}
+
 sfSprite *create_background(void)
 {
     sfTexture *texture_bend = sfTexture_createFromFile
@@ -255,6 +264,15 @@ sfSprite *create_game_over(void)
 {
     sfTexture *texture = sfTexture_createFromFile
     ("./images/menu/game_over.png", NULL);
+    sfSprite *sprite = sfSprite_create();
+    sfSprite_setTexture(sprite, texture, 0);
+    return (sprite);
+}
+
+sfSprite *create_shine(void)
+{
+    sfTexture *texture = sfTexture_createFromFile
+    ("./images/menu/shine.png", NULL);
     sfSprite *sprite = sfSprite_create();
     sfSprite_setTexture(sprite, texture, 0);
     return (sprite);
