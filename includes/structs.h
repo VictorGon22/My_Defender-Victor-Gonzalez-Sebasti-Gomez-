@@ -130,6 +130,7 @@
         int prev_fps;
         int level;
         int num_lives;
+        int enemy_killed;
         int enemy_waves;
         int score;
         int money;
@@ -141,6 +142,7 @@
         struct s_infotowers_var *slot1;
     } slots_var;
 
+    //STRUCT INFO_SOLDIERS
     typedef struct s_info_soldiers {
         int num_soldier;
         int live;
@@ -150,6 +152,7 @@
         struct s_info_soldiers *next;
     } t_info_soldiers;
 
+    //STRUCT INFO_TOWERS
     typedef struct s_info_slots {
         int num_slot;
         int show_upgrade;

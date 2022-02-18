@@ -383,7 +383,6 @@ void print_char(all_var *all, t_info_soldiers *tmp)
     }
     if (tmp->pos_soldier.x >= 0 && tmp->pos_soldier.x <= 370 ||
     tmp->pos_soldier.x >= 435 && tmp->pos_soldier.x <= 650)  { // RECTE
-        printf("ENTRA\n");
         tmp->velocity_soldier = (sfVector2f) {3 + (all->var->level * 2), 0};
         print_soldier_run(all, tmp);
     }
@@ -407,7 +406,6 @@ void print_char(all_var *all, t_info_soldiers *tmp)
         if (tmp->live > 0) {
             change_live(&all->vectors->select_live);
             tmp->live = 0;
-            all->var->enemy_waves ++;
         }
     }
 }
@@ -641,10 +639,9 @@ int all_enemies_dead_pass(all_var *all)
     int i = 0;
     t_info_soldiers *tmp = all->soldiers->next;
 
-    while (i < all->var->enemy_waves + 1) {
-        printf("%f %d\n", tmp->pos_soldier.x, tmp->live);
-        if (tmp->pos_soldier.x < 1500 || tmp->live > 0){
-            printf("NO\n");
+    while (i < all->var->enemy_waves) {
+        //printf("num: %d %f %d\n", tmp->num_soldier, tmp->pos_soldier.x, tmp->live);
+        if (tmp->live > 0) {
             return (0);
         }
         tmp = tmp->next;
@@ -654,9 +651,19 @@ int all_enemies_dead_pass(all_var *all)
     return (1);
 }
 
-void clean_soldiers(all_var *all)
+void set_num_soldiers(all_var *all)
 {
-
+    int i = 0;
+    t_info_soldiers *tmp = all->soldiers->next;
+    printf("ENTRA1\n");
+    while (i < all->var->enemy_waves) {
+        printf("%d", all->var->enemy_waves);
+        tmp->live = 100;
+        tmp->pos_soldier = (sfVector2f) {0, 700};
+        printf("num: %d %f %d\n", tmp->num_soldier, tmp->pos_soldier.x, tmp->live);
+        i++;
+        tmp = tmp->next;
+    }
 }
 
 void print_page_game(all_var *all)
@@ -665,16 +672,12 @@ void print_page_game(all_var *all)
     sfSprite_setPosition(all->sprites->background, all->vectors->pos_origin);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->background, NULL);
     int i = 0;
+    if (all->var->enemy_waves == 10)
+        all->var->page = 6;
     if (all->var->enemy_waves == 0 || all_enemies_dead_pass(all) == 1) {
-        printf("ENTRA222\n");
-        //while (i <= all->var->enemy_waves + 1) {
-        //    create_soldiers(all->soldiers);
-        //    i++;
-        //}
+        set_num_soldiers(all);
         all->var->enemy_waves++;
     }
-
-
     //SHOP
     print_shop(all);
     shop_buttons(all);
@@ -724,9 +727,9 @@ void print_page_game(all_var *all)
 
 void game_over_page(all_var *all)
 {
-    new_button *exit_button = create_button(69, 27, 170, 130);
-    new_button *main = create_button(690, 200, 500, 170);
-    new_button *play_again = create_button(690, 460, 500, 170);
+    new_button *exit_button = create_button(1265, 120, 95, 90);
+    new_button *main = create_button(565, 845, 370, 170);
+    new_button *play_again = create_button(1000, 845, 370, 170);
 
     all->clocks->time_button = sfClock_getElapsedTime(all->clocks->clock_button);
     if (all->windows->event.type == sfEvtMouseButtonPressed
@@ -747,5 +750,18 @@ void print_game_over(all_var *all)
     game_over_page(all);
     sfSprite_setPosition(all->sprites->game_over, all->vectors->pos_origin);
     sfRenderWindow_drawSprite(all->windows->window, all->sprites->game_over, NULL);
+    sfText_setColor(all->texts->text2, sfColor_fromRGB(255, 255, 255));
+    sfText_setCharacterSize(all->texts->text2, 70);
+
+    sfText_setPosition(all->texts->text2, (sfVector2f) {1100, 360});
+    sfText_setString(all->texts->text2, my_return_time(all->var->enemy_killed));
+    sfRenderWindow_drawText(all->windows->window, all->texts->text2, NULL);
+    sfText_setPosition(all->texts->text2, (sfVector2f) {1100, 480});
+    sfText_setString(all->texts->text2, my_return_time(all->var->enemy_waves));
+    sfRenderWindow_drawText(all->windows->window, all->texts->text2, NULL);    
+    sfText_setPosition(all->texts->text2, (sfVector2f) {1100, 615});
+    sfText_setString(all->texts->text2, my_return_time(all->var->enemy_waves));
+    sfRenderWindow_drawText(all->windows->window, all->texts->text2, NULL);  
+    
     sfRenderWindow_display(all->windows->window);
 }

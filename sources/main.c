@@ -108,8 +108,9 @@ sfRenderWindow *my_window(all_var *all)
 {
     srand(time(NULL));
     all->var->score = 0;
-    all->var->page = 6;
+    all->var->page = 2;
     all->var->sound_on = 1;
+    all->var->enemy_killed = 0;
     all->var->prev_sound = 1;
     all->var->prev_fps = 60;
     all->var->fps = 60;
@@ -140,7 +141,7 @@ t_info_soldiers *ini_linked_soldiers(int i)
         perror("error\n");
     file->prev = NULL;
     file->num_soldier = i;
-    file->live = 100;
+    file->live = 0;
     file->pos_soldier = (sfVector2f) {0, 700};
     file->velocity_soldier;
     file->next = NULL;
